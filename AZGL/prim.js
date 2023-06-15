@@ -67,7 +67,6 @@ export class prim {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
         }
         gl.bindVertexArray(null);
-        gl.useProgram(null);
     }
 
     load() {

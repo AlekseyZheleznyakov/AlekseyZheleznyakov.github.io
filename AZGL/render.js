@@ -4,6 +4,15 @@ import { vec3, mat4, camera } from "./mth.js";
 let gl;
 export { gl };
 
+function checkCheckbox(id) {
+  const checkbox = document.getElementById(id);
+  if (checkbox.checked) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function loadShader(gl, type, source) {
     const shader = gl.createShader(type);
 
@@ -23,8 +32,6 @@ export function initGL() {
 
     // gl.clearColor(0.514, 0.302, 0.094, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-
-    // Code below you may delete for test
 
     const vs = `#version 300 es
         precision highp float;
@@ -91,11 +98,11 @@ export function initGL() {
     ];
 
     let datapyramid =   [
-        // offset by +1.1y
-        0.0, 1.1, 0.0, 1.0, 1.0, 0.5, 1.0,
-        0.5, 1.1, 1.0, 1.0, 0.0, 1.0, 1.0,
-        1.0, 1.1, 0.0, 0.0, 0.0, 1.0, 1.0,
-        0.5, 2.1, 0.5, 0.0, 1.0, 1.0, 1.0,
+        // offset by +2y
+        0.0, 2, 0.0, 1.0, 1.0, 0.5, 1.0,
+        0.5, 2, 1.0, 1.0, 0.0, 1.0, 1.0,
+        1.0, 2, 0.0, 0.0, 0.0, 1.0, 1.0,
+        0.5, 3, 0.5, 0.0, 1.0, 1.0, 1.0,
        ];
 
    let indpyramid = [
@@ -106,18 +113,18 @@ export function initGL() {
    ];
 
    let dataoktahedron =   [
-        // offset by -1.5x
+        // offset by -2x
         // Top
-        -1.0, 1.5, 0.5, 1.0, 1.0, 0.5, 1.0,
+        -1.5, 1.5, 0.5, 1.0, 1.0, 0.5, 1.0,
 
         // Middle
-        -1.5, 0.5, 0.0, 1.0, 0.0, 1.0, 1.0,
-        -0.5, 0.5, 0.0, 0.0, 0.0, 1.0, 1.0,
-        -1.5, 0.5, 1.0, 0.0, 1.0, 1.0, 1.0,
-        -0.5, 0.5, 1.0, 0.0, 1.0, 1.0, 1.0,
+        -2, 0.5, 0.0, 1.0, 0.0, 1.0, 1.0,
+        -1, 0.5, 0.0, 0.0, 0.0, 1.0, 1.0,
+        -2, 0.5, 1.0, 0.0, 1.0, 1.0, 1.0,
+        -1, 0.5, 1.0, 0.0, 1.0, 1.0, 1.0,
 
         // Bottom
-        -1.0, -0.5, 0.5, 1.0, 1.0, 0.5, 1.0,
+        -1.5, -0.5, 0.5, 1.0, 1.0, 0.5, 1.0,
    ];
 
     let indoktahedron = [
@@ -134,23 +141,53 @@ export function initGL() {
         5, 3, 4,
     ];
 
+    let dataBufIcosahedron = [
+        // offset +3x
+        3, -1, 0, 0, 1, 0, 1, 
+        2.724, -0.447, -0.851, 1, 0, 0, 1, 
+        3.724, -0.447, -0.526, 1, 1, 0, 1, 
+        3.724, -0.447, 0.526, 1, 0, 0, 1, 
+        2.724, -0.447, 0.851, 0, 1, 0, 1, 
+        2.106, -0.447, 0, 1, 1, 0.4, 1, 
+
+        2.276, 0.447, 0.526, 1, 0.5, 0, 0.4, 
+        2.276, 0.447, -0.526, 0, 0, 1, 1, 
+        3.276, 0.447, -0.851, 1, 0, 1, 1, 
+        3.894, 0.447, 0, 0, 1, 1, 1, 
+        3.276, 0.447, 0.851, 1, 0, 1, 1, 
+        3, 1, 0, 1, 0, 1, 0.3,
+    ];
+    
+    let indIcosahedron = [
+      0, 1, 2, 0, 1, 5, 
+      0, 4, 5, 0, 3, 4, 
+      0, 2, 3, 6, 10, 11,
+      6, 7, 11, 7, 8, 11,
+      8, 9, 11, 9, 10, 11, 
+      2, 3, 9, 1, 2, 8, 
+      1, 5, 7, 4, 5, 6, 
+      3, 4, 10, 4, 6, 10,
+      5, 6, 7, 1, 7, 8, 
+      2, 8, 9, 3, 9, 10,
+    ];
+
     let cam = new camera();
     cam.resize(500, 500);
     cam.camSet(new vec3(20, 20, 30), new vec3(0, 0, 0), new vec3(0, 1, 0));
     let pr1 = new prim(gl.TRIANGLES, datapyramid, 4, indpyramid, 12, shaderProgram);
     let pr2 = new prim(gl.TRIANGLES, dataBuf, 8, ind, 36, shaderProgram);
     let pr3 = new prim(gl.TRIANGLES, dataoktahedron, 6, indoktahedron, 24, shaderProgram);
+    let pr4 = new prim(gl.TRIANGLES, dataBufIcosahedron, 12, indIcosahedron, 60, shaderProgram);
     let m = new mat4();
-    let rotcube = 0;
 
     const render = () => {
         // gl.clearColor(0.514, 0.302, 0.094, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.enable(gl.DEPTH_TEST);
-        pr1.draw((m.scale(new vec3(7, 7, 7)).mul(m.rotateY(rotcube))), cam);
-        pr2.draw((m.scale(new vec3(7, 7, 7)).mul(m.rotateY(rotcube))), cam);
-        pr3.draw((m.scale(new vec3(7, 7, 7)).mul(m.rotateY(rotcube))), cam);
-        rotcube++;
+        pr1.draw((m.scale(new vec3(4, 4, 4)).mul(m.rotateX(Date.now() / 30.0))), cam);
+        pr2.draw((m.scale(new vec3(4, 4, 4)).mul(m.rotateY(Date.now() / 30.0))), cam);
+        pr3.draw((m.scale(new vec3(4, 4, 4)).mul(m.rotateZ(Date.now() / 30.0))), cam);
+        pr4.draw((m.scale(new vec3(4, 4, 4)).mul(m.rotateY(Date.now() / 30.0))), cam);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, vBuf);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(dataBuf), gl.STATIC_DRAW);
