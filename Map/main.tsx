@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import Map from './node_modules/react-map-gl/dist/es5/exports-maplibre';
+import Map, { Marker } from './node_modules/react-map-gl/dist/es5/exports-maplibre';
 
 const App = () => {
   const [lattitude, setLat] = useState(0);
@@ -43,7 +43,9 @@ const App = () => {
         }}
         style={{width: 2000, height: 600}}
         mapStyle="https://api.maptiler.com/maps/streets/style.json?key=npDaQxzNFWYxaf2MY7TI"
-      />
+      >
+        <Marker color="red" longitude={longitude} latitude={lattitude}></Marker>
+      </Map>
       <br/><br/><br/><br/>
       <table>
         <tbody>
